@@ -871,5 +871,7 @@ describe_macro_to_string!(u32);
 describe_macro_to_string!(u64);
 describe_macro_to_string!(u16);
 describe_macro_to_string!(i16);
+describe_macro_to_string!(f32);
+describe_macro_to_string!(f64);
 describe_macro_to_string!(usize);
 describe_macro_to_string!(bool);
