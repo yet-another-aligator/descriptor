@@ -16,6 +16,13 @@ struct StructField {
     attr: DescriptorFieldAttr,
 }
 
+impl StructField {
+    fn renamed_attribute(&self) -> String {
+        self.clone().attr.rename_attribute
+            .unwrap_or(self.clone().field_name.to_case(Case::Title))
+    }
+}
+
 #[proc_macro_derive(Descriptor, attributes(descriptor))]
 #[proc_macro_error]
 pub fn descriptor(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
@@ -67,7 +74,7 @@ fn generate_struct_decriptor(input: ItemStruct) -> proc_macro::TokenStream {
 fn pad_struct(fields: &[StructField]) -> TokenStream {
     let pad = match fields
         .iter()
-        .map(|field| field.field_name.to_case(Case::Title).len())
+        .map(|field| field.renamed_attribute().len())
         .max()
     {
         None => 0,
@@ -342,7 +349,7 @@ fn describe_method_for_struct(
 
 // Will generate the describe for a specific field
 fn describe_field(field: &StructField, first_field: bool) -> TokenStream {
-    let title_name = field.field_name.to_case(Case::Title);
+    let title_name = field.renamed_attribute();
     let ident = &field.ident;
 
     if field.attr.flatten {

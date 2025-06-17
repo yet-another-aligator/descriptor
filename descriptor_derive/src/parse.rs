@@ -27,6 +27,7 @@ pub struct DescriptorFieldAttr {
     pub resolve_option: bool,
     pub into: Option<Expr>,
     pub map: Option<Expr>,
+    pub rename_attribute: Option<String>,
     pub rename_description: Option<String>,
     pub rename_header: Option<String>,
     pub flatten: bool,
@@ -133,6 +134,7 @@ pub fn extract_field_attributes(all_attrs: &[Attribute]) -> DescriptorFieldAttr 
         output_table: false,
         flatten: false,
         resolve_option: false,
+        rename_attribute: None,
         rename_header: None,
         rename_description: None,
         map: None,
@@ -174,6 +176,10 @@ pub fn extract_field_attributes(all_attrs: &[Attribute]) -> DescriptorFieldAttr 
             ("resolve_option", None, None, ..) => field_attribute.resolve_option = true,
             ("resolve_option", _, _, ident) => {
                 abort! {ident,"not expected `string literal` or `expression` after `=`"}
+            }
+            ("rename_attribute", None, Some(val), ..) => field_attribute.rename_attribute = Some(val),
+            ("rename_attribute", _, _, ident) => {
+                abort! {ident,"expected `string literal` or `expression` after `=`"}
             }
             ("rename_description", None, Some(val), ..) => {
                 field_attribute.rename_description = Some(val)

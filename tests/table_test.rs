@@ -91,11 +91,14 @@ hidden
 #[test]
 fn test_table_headers() {
     #[derive(Descriptor, Clone)]
-    #[descriptor(default_headers = ["table", "long_column"])]
+    #[descriptor(default_headers = ["table", "long_column", "to_be_renamed"])]
     struct Table {
         table: String,
+        #[descriptor(rename_attribute = "DOES NOT EFFECT ON TABLE MODE")]
         long_column: String,
         small_one: String,
+        #[descriptor(rename_header = "RENAMED")]
+        to_be_renamed: String,
     }
 
     let table = vec![
@@ -103,20 +106,22 @@ fn test_table_headers() {
             table: "table".to_string(),
             long_column: "long".to_string(),
             small_one: "s".to_string(),
+            to_be_renamed: "foo".to_string(),
         },
         Table {
             table: "row2".to_string(),
             long_column: "row".to_string(),
             small_one: "s".to_string(),
+            to_be_renamed: "bar".to_string(),
         },
     ];
 
     let table = table_describe_to_string(&table).unwrap();
     assert_eq!(
         r#"
-TABLE LONG_COLUMN
-table long
-row2  row
+TABLE LONG_COLUMN RENAMED
+table long        foo
+row2  row         bar
 "#,
         no_color_and_line_return(table)
     );

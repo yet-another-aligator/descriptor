@@ -2,7 +2,7 @@
 //!
 //! # Simple Example
 //! ```
-//! use descriptor::{object_describe_to_string, table_describe_to_string, Descriptor};
+//! use descriptor::{Descriptor, object_describe_to_string, table_describe_to_string};
 //!
 //! #[derive(Descriptor)]
 //! struct User {
@@ -264,7 +264,7 @@
 //! Age:  32 years
 //! "#,  description);
 //! ```
-//! ### `#[descriptor(into)]`
+//! ### `#[descriptor(into = AnotherType)]`
 //!
 //! Act like `into` parameter in struct level,
 //!
@@ -349,7 +349,7 @@
 //! - `#[descriptor(skip_header)]`:  Skip this field from default headers
 //!
 //! ```
-//! use descriptor::{Descriptor, object_describe_to_string, table_describe_to_string, table_describe_with_header_to_string, object_describe};
+//! use descriptor::{Descriptor, object_describe_to_string, table_describe_to_string, table_describe_with_header_to_string};
 //! #[derive(Descriptor, Clone)]
 //! struct Car {
 //!     brand: String,
@@ -387,12 +387,36 @@
 //! 2
 //! "#,  format!("\n{}", table));
 //! ```
-//! ### `#[descriptor(rename_header)]`
+//!
+//! ### `#[descriptor(rename_attribute = "<new name>")]`
+//!
+//! Rename the auto-generated name for object attribute
+//!
+//! ```
+//! use descriptor::{Descriptor, object_describe_to_string};
+//! #[derive(Descriptor)]
+//! struct Car {
+//!     #[descriptor(rename_attribute="Marque")]
+//!     brand: String,
+//!     #[descriptor(rename_attribute="Sieges")]
+//!     seats: i16,
+//! }
+//!
+//! let car = Car{brand: "Audi".to_string(), seats:4};
+//!
+//! let object = object_describe_to_string(&car).unwrap();
+//! assert_eq!(r#"
+//! Marque: Audi
+//! Sieges: 4
+//! "#, object);
+//! ```
+//!
+//! ### `#[descriptor(rename_header = "<new name>")]`
 //!
 //! Rename the auto-generated name for table header
 //!
 //! ```
-//! use descriptor::{Descriptor, object_describe_to_string, table_describe_to_string, table_describe_with_header_to_string, object_describe};
+//! use descriptor::{Descriptor, table_describe_to_string};
 //! #[derive(Descriptor)]
 //! struct Car {
 //!     #[descriptor(rename_header="Marque")]
@@ -415,7 +439,7 @@
 //! ```
 //!
 //! ## Enum parameters
-//! ### `#[descriptor(rename_description = "Renamed")]`
+//! ### `#[descriptor(rename_description = "<new value>")]`
 //!
 //! Rename the value for enums.
 //!
@@ -579,7 +603,7 @@ pub trait Describe {
         vec![]
     }
 
-    // Return another name for an header
+    // Return another name for a header
     fn header_name(_: &str) -> Option<String> {
         None
     }

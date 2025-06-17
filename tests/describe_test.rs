@@ -269,6 +269,7 @@ fn test_table_description() {
     #[derive(Descriptor, Clone)]
     struct InnerFoo {
         state: String,
+        #[descriptor(rename_attribute = "ATTR-Value", rename_header = "HDR-Value")]
         value: String,
     }
 
@@ -290,12 +291,12 @@ fn test_table_description() {
     assert_eq!(
         r#"
 History No Table:
-- State: test
-  Value: t
-- State: t
-  Value: test
+- State:      test
+  ATTR-Value: t
+- State:      t
+  ATTR-Value: test
 History:
-  STATE   VALUE
+  STATE   HDR-Value
   test    t
   t       test
 "#,
